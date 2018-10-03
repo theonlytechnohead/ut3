@@ -34,7 +34,7 @@ public class boardBuilder : MonoBehaviour
 		GameObject boardObject = Instantiate(boardPrefab, parent.position, Quaternion.identity, parent);
 		if (!top)
 		{
-			boardObject.GetComponent<VerticalLayoutGroup>().spacing = 10f;
+			boardObject.GetComponent<VerticalLayoutGroup>().spacing = 100f / (size * size);
 			boardObject.GetComponent<VerticalLayoutGroup>().padding = new RectOffset(0, 0, 0, 0);
 			Destroy(boardObject.GetComponent<Image>());
 		}
@@ -47,7 +47,7 @@ public class boardBuilder : MonoBehaviour
 			GameObject rowObject = Instantiate(rowPrefab, boardObject.transform);
 			if (!top)
 			{
-				rowObject.GetComponent<HorizontalLayoutGroup>().spacing = 10f;
+				rowObject.GetComponent<HorizontalLayoutGroup>().spacing = 100f / (size * size);
 			}
 			for (int column = 0; column < size; column++)
 			{

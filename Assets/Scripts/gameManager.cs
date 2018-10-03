@@ -47,11 +47,6 @@ public class gameManager : MonoBehaviour
 		squareController controller = square.GetComponent<squareController>();
 		if (square.GetComponent<squareController>().valid)
 		{
-			if (lastHighlight && board.transform.GetChild(controller.row).GetChild(controller.column).GetComponent<squareController>().wonBy == 0)
-			{
-				lastHighlight.GetComponent<squareController>().currentColour = Color.clear;
-				lastHighlight.GetComponent<Image>().color = Color.clear;
-			}
 			if (turn == 1)
 			{
 				turn++;
@@ -90,14 +85,9 @@ public class gameManager : MonoBehaviour
 					squareStateList.Add(sublist);
 				}
 				int smallSquareWin = checkWin(squareStateList);
-				if (smallSquareWin == 1)
+				if (smallSquareWin != 0)
 				{
-					lastHighlight.GetComponent<squareController>().setWinState(1);
-					destroyChildren(lastHighlight.gameObject);
-				}
-				else if (smallSquareWin == 2)
-				{
-					lastHighlight.GetComponent<squareController>().setWinState(2);
+					lastHighlight.GetComponent<squareController>().setWinState(smallSquareWin);
 					destroyChildren(lastHighlight.gameObject);
 				}
 				// Check win for whole board
@@ -155,8 +145,6 @@ public class gameManager : MonoBehaviour
 				// Otherwise everything is valid
 				setSmallAllValidity(true);
 				setLargeAllValidity(true);
-				// Disable last taken square
-				//lastHighlight.GetComponent<squareController>().setLargeSquareValidity(false);
 				lastHighlight.GetComponent<Image>().color = lastHighlight.GetComponent<squareController>().currentColour;
 			}
 		}
@@ -206,12 +194,12 @@ public class gameManager : MonoBehaviour
 			if (largeSquare.GetComponent<squareController>().wonBy == 1)
 			{
 				largeSquare.GetComponent<Image>().color = oneSquareColour;
-				largeSquare.GetComponent<squareController>().currentColour = oneSquareColour;
+				//largeSquare.GetComponent<squareController>().currentColour = oneSquareColour;
 			}
 			else
 			{
 				largeSquare.GetComponent<Image>().color = twoSquareColour;
-				largeSquare.GetComponent<squareController>().currentColour = twoSquareColour;
+				//largeSquare.GetComponent<squareController>().currentColour = twoSquareColour;
 			}
 
 		}
@@ -342,6 +330,7 @@ public class gameManager : MonoBehaviour
 
 		return 0;
 	}
+
 	int checkRow(List<int> row)
 	{
 		bool playerOne = true;

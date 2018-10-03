@@ -81,14 +81,17 @@ public class squareController : MonoBehaviour
 		valid = state;
 		if (state)
 		{
-			if (gameManager.instance.turn == 1)
+			if (wonBy == 0)
 			{
-				GetComponent<Image>().color = gameManager.instance.oneHighlightSquareColour;
+				if (gameManager.instance.turn == 1)
+				{
+					GetComponent<Image>().color = gameManager.instance.oneHighlightSquareColour;
 
-			}
-			else
-			{
-				GetComponent<Image>().color = gameManager.instance.twoHighlightSquareColour;
+				}
+				else
+				{
+					GetComponent<Image>().color = gameManager.instance.twoHighlightSquareColour;
+				}
 			}
 		}
 		else
@@ -103,10 +106,11 @@ public class squareController : MonoBehaviour
 		if (winner == 1)
 		{
 			currentColour = gameManager.instance.oneSquareColour;
-			GetComponent<Image>().color = gameManager.instance.oneSquareColour;
-		} else {
-			currentColour = gameManager.instance.twoSquareColour;
-			GetComponent<Image>().color = gameManager.instance.twoSquareColour;
 		}
+		else
+		{
+			currentColour = gameManager.instance.twoSquareColour;
+		}
+		GetComponent<Image>().color = currentColour;
 	}
 }
