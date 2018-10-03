@@ -25,6 +25,7 @@ public class gameManager : MonoBehaviour
 	public Color twoHighlightSquareColour;
 
 	public GameObject canvas;
+	public GameObject StartPanel;
 	public GameObject WinPanel;
 
 	[HideInInspector]
@@ -35,14 +36,64 @@ public class gameManager : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		board = canvas.GetComponent<boardBuilder>().buildBoard(boardSize);
-		setLargeAllValidity(true);
+		setup();
+	}
+
+	void setup()
+	{
+		foreach (Transform child in canvas.transform)
+		{
+			Destroy(child.gameObject);
+		}
+		turn = 1;
+		GameObject startPanel = Instantiate(StartPanel, canvas.transform, false);
+
+		Button two_button = startPanel.transform.GetChild(1).GetComponent<Button>();
+		UnityAction two_action = new UnityAction(buildBoard_2);
+		two_button.onClick.AddListener(two_action);
+
+		Button three_button = startPanel.transform.GetChild(2).GetComponent<Button>();
+		UnityAction three_action = new UnityAction(buildBoard_3);
+		three_button.onClick.AddListener(three_action);
+
+		Button four_button = startPanel.transform.GetChild(3).GetComponent<Button>();
+		UnityAction four_action = new UnityAction(buildBoard_4);
+		four_button.onClick.AddListener(four_action);
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Q)) {
+			Application.Quit();
+		}
+		if (Input.GetKeyDown(KeyCode.R)) {
+			setup();
+		}
+	}
 
+	public void buildBoard_2()
+	{
+		boardSize = 2;
+		Destroy(canvas.transform.GetChild(0).gameObject);
+		board = canvas.GetComponent<boardBuilder>().buildBoard(2);
+		setLargeAllValidity(true);
+	}
+
+	public void buildBoard_3()
+	{
+		boardSize = 3;
+		Destroy(canvas.transform.GetChild(0).gameObject);
+		board = canvas.GetComponent<boardBuilder>().buildBoard(3);
+		setLargeAllValidity(true);
+	}
+
+	public void buildBoard_4()
+	{
+		boardSize = 4;
+		Destroy(canvas.transform.GetChild(0).gameObject);
+		board = canvas.GetComponent<boardBuilder>().buildBoard(4);
+		setLargeAllValidity(true);
 	}
 
 	public void squareClicked(GameObject square, PointerEventData data)
@@ -378,15 +429,7 @@ public class gameManager : MonoBehaviour
 			winPanel.GetComponent<Image>().color = twoHighlightSquareColour;
 		}
 		Button button = winPanel.transform.GetChild(2).GetComponent<Button>();
-		UnityAction continueAction = new UnityAction(continueButton);
+		UnityAction continueAction = new UnityAction(setup);
 		button.onClick.AddListener(continueAction);
-	}
-
-	public void continueButton()
-	{
-		Destroy(canvas.transform.GetChild(1).gameObject);
-		Destroy(canvas.transform.GetChild(0).gameObject);
-		board = canvas.GetComponent<boardBuilder>().buildBoard(boardSize);
-		setLargeAllValidity(true);
 	}
 }
