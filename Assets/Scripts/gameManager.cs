@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class gameManager : MonoBehaviour
 {
@@ -23,7 +25,9 @@ public class gameManager : MonoBehaviour
 	public Color twoHighlightSquareColour;
 
 	public GameObject canvas;
+	public GameObject WinPanel;
 
+	[HideInInspector]
 	public int turn = 1;
 	GameObject board;
 	Transform lastHighlight;
@@ -103,13 +107,9 @@ public class gameManager : MonoBehaviour
 				}
 				int largeSquareWin = checkWin(largeSquareStateList);
 				// Handle win - TEMP
-				if (largeSquareWin == 1)
+				if (largeSquareWin != 0)
 				{
-					print("Player one wins!");
-				}
-				else if (largeSquareWin == 2)
-				{
-					print("Player two wins!");
+					win(largeSquareWin);
 				}
 			}
 			// Do highlight updating
@@ -363,5 +363,30 @@ public class gameManager : MonoBehaviour
 		{
 			return 0;
 		}
+	}
+
+	void win(int player)
+	{
+		GameObject winPanel = Instantiate(WinPanel, canvas.transform, false);
+		winPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + player;
+		if (player == 1)
+		{
+			winPanel.GetComponent<Image>().color = oneHighlightSquareColour;
+		}
+		else
+		{
+			winPanel.GetComponent<Image>().color = twoHighlightSquareColour;
+		}
+		Button button = winPanel.transform.GetChild(2).GetComponent<Button>();
+		UnityAction continueAction = new UnityAction(continueButton);
+		button.onClick.AddListener(continueAction);
+	}
+
+	public void continueButton()
+	{
+		Destroy(canvas.transform.GetChild(1).gameObject);
+		Destroy(canvas.transform.GetChild(0).gameObject);
+		board = canvas.GetComponent<boardBuilder>().buildBoard(boardSize);
+		setLargeAllValidity(true);
 	}
 }

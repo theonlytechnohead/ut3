@@ -218,6 +218,7 @@ MonoBehaviour:
   oneHighlightSquareColour: {r: 0.6627451, g: 0, b: 1, a: 0.74509805}
   twoHighlightSquareColour: {r: 1, g: 0.6862745, b: 0, a: 0.74509805}
   canvas: {fileID: 1484711521}
+  WinPanel: {fileID: 1589563584936526, guid: 83ee0498c7686417ba41402c09d30bc3, type: 2}
   turn: 1
 --- !u!20 &519420031
 Camera:
@@ -344,7 +345,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
