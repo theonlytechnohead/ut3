@@ -85,12 +85,12 @@ public class squareController : MonoBehaviour
 			{
 				if (gameManager.instance.turn == 1)
 				{
-					GetComponent<Image>().color = gameManager.instance.oneHighlightSquareColour;
+					GetComponent<Image>().color = gameManager.instance.oneSquareColour;
 
 				}
 				else
 				{
-					GetComponent<Image>().color = gameManager.instance.twoHighlightSquareColour;
+					GetComponent<Image>().color = gameManager.instance.twoSquareColour;
 				}
 			}
 		}

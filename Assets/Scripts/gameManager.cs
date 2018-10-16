@@ -49,50 +49,44 @@ public class gameManager : MonoBehaviour
 		GameObject startPanel = Instantiate(StartPanel, canvas.transform, false);
 
 		Button two_button = startPanel.transform.GetChild(1).GetComponent<Button>();
-		UnityAction two_action = new UnityAction(buildBoard_2);
+		UnityAction two_action = new UnityAction(delegate { buildBoard(2); });
 		two_button.onClick.AddListener(two_action);
 
 		Button three_button = startPanel.transform.GetChild(2).GetComponent<Button>();
-		UnityAction three_action = new UnityAction(buildBoard_3);
+		UnityAction three_action = new UnityAction(delegate { buildBoard(3); });
 		three_button.onClick.AddListener(three_action);
 
 		Button four_button = startPanel.transform.GetChild(3).GetComponent<Button>();
-		UnityAction four_action = new UnityAction(buildBoard_4);
+		UnityAction four_action = new UnityAction(delegate { buildBoard(4); });
 		four_button.onClick.AddListener(four_action);
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Q)) {
-			Application.Quit();
-		}
-		if (Input.GetKeyDown(KeyCode.R)) {
+#if UNITY_EDITOR
+		if (Input.GetKeyDown(KeyCode.R) & Input.GetKey(KeyCode.LeftControl))
+		{
 			setup();
 		}
+#endif
+#if UNITY_STANDALONE
+		if (Input.GetKeyDown(KeyCode.Q) & Input.GetKey(KeyCode.LeftControl))
+		{
+			Application.Quit();
+		}
+		if (Input.GetKeyDown(KeyCode.R) & Input.GetKey(KeyCode.LeftControl))
+		{
+			setup();
+		}
+#endif
 	}
 
-	public void buildBoard_2()
+	public void buildBoard(int size)
 	{
-		boardSize = 2;
+		boardSize = size;
 		Destroy(canvas.transform.GetChild(0).gameObject);
-		board = canvas.GetComponent<boardBuilder>().buildBoard(2);
-		setLargeAllValidity(true);
-	}
-
-	public void buildBoard_3()
-	{
-		boardSize = 3;
-		Destroy(canvas.transform.GetChild(0).gameObject);
-		board = canvas.GetComponent<boardBuilder>().buildBoard(3);
-		setLargeAllValidity(true);
-	}
-
-	public void buildBoard_4()
-	{
-		boardSize = 4;
-		Destroy(canvas.transform.GetChild(0).gameObject);
-		board = canvas.GetComponent<boardBuilder>().buildBoard(4);
+		board = canvas.GetComponent<boardBuilder>().buildBoard(size);
 		setLargeAllValidity(true);
 	}
 
@@ -210,27 +204,13 @@ public class gameManager : MonoBehaviour
 			if (controller.wonBy == 0)
 			{
 				controller.squareHoverOn(square);
-				if (largeSquare.GetComponent<squareController>().wonBy == 0)
+				if (turn == 1)
 				{
-					if (turn == 1)
-					{
-						largeSquare.GetComponent<Image>().color = twoSquareColour;
-					}
-					else
-					{
-						largeSquare.GetComponent<Image>().color = oneSquareColour;
-					}
+					largeSquare.GetComponent<Image>().color = twoHighlightSquareColour;
 				}
 				else
 				{
-					if (turn == 1)
-					{
-						largeSquare.GetComponent<Image>().color = twoHighlightSquareColour;
-					}
-					else
-					{
-						largeSquare.GetComponent<Image>().color = oneHighlightSquareColour;
-					}
+					largeSquare.GetComponent<Image>().color = oneHighlightSquareColour;
 				}
 			}
 		}
@@ -244,12 +224,12 @@ public class gameManager : MonoBehaviour
 		{
 			if (largeSquare.GetComponent<squareController>().wonBy == 1)
 			{
-				largeSquare.GetComponent<Image>().color = oneSquareColour;
+				largeSquare.GetComponent<Image>().color = oneHighlightSquareColour;
 				//largeSquare.GetComponent<squareController>().currentColour = oneSquareColour;
 			}
 			else
 			{
-				largeSquare.GetComponent<Image>().color = twoSquareColour;
+				largeSquare.GetComponent<Image>().color = twoHighlightSquareColour;
 				//largeSquare.GetComponent<squareController>().currentColour = twoSquareColour;
 			}
 
@@ -258,11 +238,11 @@ public class gameManager : MonoBehaviour
 		{
 			if (turn == 1)
 			{
-				largeSquare.GetComponent<Image>().color = oneHighlightSquareColour;
+				largeSquare.GetComponent<Image>().color = oneSquareColour;
 			}
 			else
 			{
-				largeSquare.GetComponent<Image>().color = twoHighlightSquareColour;
+				largeSquare.GetComponent<Image>().color = oneSquareColour;
 			}
 		}
 		else
