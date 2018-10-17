@@ -29,6 +29,16 @@ public class boardBuilder : MonoBehaviour
 		return board;
 	}
 
+	public GameObject loadBoard(int size, List<Vector5Int> data)
+	{
+		createBoard(size, transform, true);
+		foreach (Vector5Int square in data)
+		{
+			board.transform.GetChild(square.largeRow).GetChild(square.largeColumn).GetChild(0).GetChild(square.smallRow).GetChild(square.smallColumn).GetComponent<squareController>().setWinState(square.wonBy);
+		}
+		return board;
+	}
+
 	void createBoard(int size, Transform parent, bool top)
 	{
 		GameObject boardObject = Instantiate(boardPrefab, parent.position, Quaternion.identity, parent);
@@ -59,7 +69,9 @@ public class boardBuilder : MonoBehaviour
 				{
 					squareObject.GetComponent<squareController>().setEnabledState(false);
 					createBoard(size, squareObject.transform, false);
-				} else {
+				}
+				else
+				{
 					squareObject.GetComponent<squareController>().setEnabledState(true);
 				}
 			}

@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class gameManager : MonoBehaviour
 {
@@ -33,6 +35,9 @@ public class gameManager : MonoBehaviour
 	GameObject board;
 	Transform lastHighlight;
 
+	[SerializeField]
+	List<Vector5Int> data = new List<Vector5Int>();
+
 	// Use this for initialization
 	void Start()
 	{
@@ -45,6 +50,7 @@ public class gameManager : MonoBehaviour
 		{
 			Destroy(child.gameObject);
 		}
+		data.Clear();
 		turn = 1;
 		GameObject startPanel = Instantiate(StartPanel, canvas.transform, false);
 
@@ -65,9 +71,17 @@ public class gameManager : MonoBehaviour
 	void Update()
 	{
 #if UNITY_EDITOR
-		if (Input.GetKeyDown(KeyCode.R) & Input.GetKey(KeyCode.LeftControl))
+		if (Input.GetKeyDown(KeyCode.R))
 		{
 			setup();
+		}
+		if (Input.GetKeyDown(KeyCode.S))
+		{
+			save();
+		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			loadBoard();
 		}
 #endif
 #if UNITY_STANDALONE
@@ -79,6 +93,14 @@ public class gameManager : MonoBehaviour
 		{
 			setup();
 		}
+		if (Input.GetKeyDown(KeyCode.S) & Input.GetKey(KeyCode.LeftControl))
+		{
+			save();
+		}
+		if (Input.GetKeyDown(KeyCode.L) & Input.GetKey(KeyCode.LeftControl))
+		{
+			loadBoard();
+		}
 #endif
 	}
 
@@ -88,6 +110,14 @@ public class gameManager : MonoBehaviour
 		Destroy(canvas.transform.GetChild(0).gameObject);
 		board = canvas.GetComponent<boardBuilder>().buildBoard(size);
 		setLargeAllValidity(true);
+	}
+
+	public void loadBoard()
+	{
+		boardSize = PlayerPrefs.GetInt("size");
+		Destroy(canvas.transform.GetChild(0).gameObject);
+		board = canvas.GetComponent<boardBuilder>().loadBoard(boardSize, load());
+		//handle validity
 	}
 
 	public void squareClicked(GameObject square, PointerEventData data)
@@ -411,5 +441,61 @@ public class gameManager : MonoBehaviour
 		Button button = winPanel.transform.GetChild(2).GetComponent<Button>();
 		UnityAction continueAction = new UnityAction(setup);
 		button.onClick.AddListener(continueAction);
+	}
+
+	public void save()
+	{
+		PlayerPrefs.SetInt("size", boardSize);
+		PlayerPrefs.Save();
+		data.Clear();
+		foreach (Transform r1 in board.transform)
+		{
+			foreach (Transform s1 in r1)
+			{
+				if (s1.childCount > 0)
+				{
+					foreach (Transform r2 in s1.GetChild(0))
+					{
+						foreach (Transform s2 in r2)
+						{
+							data.Add(new Vector5Int(
+								s1.GetComponent<squareController>().row,
+								s1.GetComponent<squareController>().column,
+								s2.GetComponent<squareController>().row,
+								s2.GetComponent<squareController>().column,
+								s2.GetComponent<squareController>().wonBy
+							));
+						}
+					}
+				}
+			}
+		}
+		string destination = Application.persistentDataPath + "/save.dat";
+		FileStream file;
+
+		if (File.Exists(destination)) file = File.OpenWrite(destination);
+		else file = File.Create(destination);
+
+		BinaryFormatter bf = new BinaryFormatter();
+		bf.Serialize(file, data);
+		file.Close();
+		print("Saved " + data.Count + " squares");
+	}
+
+	public List<Vector5Int> load()
+	{
+		string destination = Application.persistentDataPath + "/save.dat";
+		FileStream file;
+		List<Vector5Int> squares = new List<Vector5Int>();
+
+		if (File.Exists(destination))
+		{
+			BinaryFormatter bf = new BinaryFormatter();
+			file = File.Open(destination, FileMode.Open);
+			squares = (List<Vector5Int>)bf.Deserialize(file);
+			file.Close();
+		}
+		print("Loaded " + data.Count + " squares");
+		return squares;
 	}
 }
