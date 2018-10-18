@@ -55,6 +55,8 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\$Vector5.cs" />
      <Compile Include="Assets\Scripts\$Vector5Int.cs" />
+     <Compile Include="Assets\Scripts\$Vector6.cs" />
+     <Compile Include="Assets\Scripts\$Vector6Int.cs" />
      <Compile Include="Assets\Scripts\boardBuilder.cs" />
      <Compile Include="Assets\Scripts\gameManager.cs" />
      <Compile Include="Assets\Scripts\squareController.cs" />

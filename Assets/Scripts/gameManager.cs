@@ -35,8 +35,11 @@ public class gameManager : MonoBehaviour
 	GameObject board;
 	Transform lastHighlight;
 
+	[HideInInspector]
 	[SerializeField]
-	List<Vector5Int> data = new List<Vector5Int>();
+	List<Vector5Int> largeData = new List<Vector5Int>();
+	[SerializeField]
+	List<Vector6Int> smallData = new List<Vector6Int>();
 
 	// Use this for initialization
 	void Start()
@@ -50,7 +53,8 @@ public class gameManager : MonoBehaviour
 		{
 			Destroy(child.gameObject);
 		}
-		data.Clear();
+		largeData.Clear();
+		smallData.Clear();
 		turn = 1;
 		GameObject startPanel = Instantiate(StartPanel, canvas.transform, false);
 
@@ -116,8 +120,30 @@ public class gameManager : MonoBehaviour
 	{
 		boardSize = PlayerPrefs.GetInt("size");
 		Destroy(canvas.transform.GetChild(0).gameObject);
-		board = canvas.GetComponent<boardBuilder>().loadBoard(boardSize, load());
-		//handle validity
+		board = canvas.GetComponent<boardBuilder>().loadBoard(boardSize, loadLarge(), loadSmall());
+		// Check for won squares
+		foreach (Transform r1 in board.transform)
+		{
+			foreach (Transform s1 in r1)
+			{
+				List<List<int>> squareStateList = new List<List<int>>();
+				for (int row = 0; row < s1.GetChild(0).childCount; row++)
+				{
+					List<int> sublist = new List<int>();
+					for (int child = 0; child < s1.GetChild(0).GetChild(row).childCount; child++)
+					{
+						sublist.Add(s1.GetChild(0).GetChild(row).GetChild(child).GetComponent<squareController>().wonBy);
+					}
+					squareStateList.Add(sublist);
+				}
+				int smallSquareWin = checkWin(squareStateList);
+				if (smallSquareWin != 0)
+				{
+					s1.GetComponent<squareController>().setWinState(smallSquareWin);
+					destroyChildren(s1.gameObject);
+				}
+			}
+		}
 	}
 
 	public void squareClicked(GameObject square, PointerEventData data)
@@ -447,7 +473,21 @@ public class gameManager : MonoBehaviour
 	{
 		PlayerPrefs.SetInt("size", boardSize);
 		PlayerPrefs.Save();
-		data.Clear();
+		largeData.Clear();
+		smallData.Clear();
+		foreach (Transform r1 in board.transform)
+		{
+			foreach (Transform s1 in r1)
+			{
+				largeData.Add(new Vector5Int(
+					0,
+					s1.GetComponent<squareController>().row,
+					s1.GetComponent<squareController>().column,
+					s1.GetComponent<squareController>().wonBy,
+					s1.GetComponent<squareController>().valid ? 1 : 0
+					));
+			}
+		}
 		foreach (Transform r1 in board.transform)
 		{
 			foreach (Transform s1 in r1)
@@ -458,44 +498,67 @@ public class gameManager : MonoBehaviour
 					{
 						foreach (Transform s2 in r2)
 						{
-							data.Add(new Vector5Int(
+							smallData.Add(new Vector6Int(
 								s1.GetComponent<squareController>().row,
 								s1.GetComponent<squareController>().column,
 								s2.GetComponent<squareController>().row,
 								s2.GetComponent<squareController>().column,
-								s2.GetComponent<squareController>().wonBy
+								s2.GetComponent<squareController>().wonBy,
+								s2.GetComponent<squareController>().valid ? 1 : 0
 							));
 						}
 					}
 				}
 			}
 		}
-		string destination = Application.persistentDataPath + "/save.dat";
+		string destination = Application.persistentDataPath + "/large.dat";
 		FileStream file;
 
 		if (File.Exists(destination)) file = File.OpenWrite(destination);
 		else file = File.Create(destination);
 
 		BinaryFormatter bf = new BinaryFormatter();
-		bf.Serialize(file, data);
+		bf.Serialize(file, largeData);
 		file.Close();
-		print("Saved " + data.Count + " squares");
+
+		destination = Application.persistentDataPath + "/small.dat";
+
+		if (File.Exists(destination)) file = File.OpenWrite(destination);
+		else file = File.Create(destination);
+
+		bf.Serialize(file, smallData);
+		file.Close();
 	}
 
-	public List<Vector5Int> load()
+	public List<Vector5Int> loadLarge()
 	{
-		string destination = Application.persistentDataPath + "/save.dat";
+		string destination = Application.persistentDataPath + "/large.dat";
 		FileStream file;
-		List<Vector5Int> squares = new List<Vector5Int>();
+		List<Vector5Int> largeSquares = new List<Vector5Int>();
 
 		if (File.Exists(destination))
 		{
 			BinaryFormatter bf = new BinaryFormatter();
 			file = File.Open(destination, FileMode.Open);
-			squares = (List<Vector5Int>)bf.Deserialize(file);
+			largeSquares = (List<Vector5Int>)bf.Deserialize(file);
 			file.Close();
 		}
-		print("Loaded " + data.Count + " squares");
-		return squares;
+		return largeSquares;
+	}
+
+	public List<Vector6Int> loadSmall()
+	{
+		string destination = Application.persistentDataPath + "/small.dat";
+		FileStream file;
+		List<Vector6Int> smallSquares = new List<Vector6Int>();
+
+		if (File.Exists(destination))
+		{
+			BinaryFormatter bf = new BinaryFormatter();
+			file = File.Open(destination, FileMode.Open);
+			smallSquares = (List<Vector6Int>)bf.Deserialize(file);
+			file.Close();
+		}
+		return smallSquares;
 	}
 }

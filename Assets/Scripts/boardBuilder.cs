@@ -29,12 +29,21 @@ public class boardBuilder : MonoBehaviour
 		return board;
 	}
 
-	public GameObject loadBoard(int size, List<Vector5Int> data)
+	public GameObject loadBoard(int size, List<Vector5Int> largeData, List<Vector6Int> smallData)
 	{
 		createBoard(size, transform, true);
-		foreach (Vector5Int square in data)
+		print(smallData.Count);
+		foreach (Vector5Int largeSquare in largeData)
 		{
-			board.transform.GetChild(square.largeRow).GetChild(square.largeColumn).GetChild(0).GetChild(square.smallRow).GetChild(square.smallColumn).GetComponent<squareController>().setWinState(square.wonBy);
+			bool valid = largeSquare.valid != 0;
+			board.transform.GetChild(largeSquare.largeRow).GetChild(largeSquare.largeColumn).GetComponent<squareController>().setWinState(largeSquare.wonBy);
+			board.transform.GetChild(largeSquare.largeRow).GetChild(largeSquare.largeColumn).GetComponent<squareController>().valid = valid;
+		}
+		foreach (Vector6Int smallSquare in smallData)
+		{
+			bool valid = smallSquare.valid != 0;
+			board.transform.GetChild(smallSquare.largeRow).GetChild(smallSquare.largeColumn).GetChild(0).GetChild(smallSquare.smallRow).GetChild(smallSquare.smallColumn).GetComponent<squareController>().setWinState(smallSquare.wonBy);
+			board.transform.GetChild(smallSquare.largeRow).GetChild(smallSquare.largeColumn).GetChild(0).GetChild(smallSquare.smallRow).GetChild(smallSquare.smallColumn).GetComponent<squareController>().valid = valid;
 		}
 		return board;
 	}
