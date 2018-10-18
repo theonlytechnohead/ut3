@@ -32,12 +32,11 @@ public class boardBuilder : MonoBehaviour
 	public GameObject loadBoard(int size, List<Vector5Int> largeData, List<Vector6Int> smallData)
 	{
 		createBoard(size, transform, true);
-		print(smallData.Count);
 		foreach (Vector5Int largeSquare in largeData)
 		{
 			bool valid = largeSquare.valid != 0;
 			board.transform.GetChild(largeSquare.largeRow).GetChild(largeSquare.largeColumn).GetComponent<squareController>().setWinState(largeSquare.wonBy);
-			board.transform.GetChild(largeSquare.largeRow).GetChild(largeSquare.largeColumn).GetComponent<squareController>().valid = valid;
+			board.transform.GetChild(largeSquare.largeRow).GetChild(largeSquare.largeColumn).GetComponent<squareController>().setLargeSquareValidity(valid);
 		}
 		foreach (Vector6Int smallSquare in smallData)
 		{

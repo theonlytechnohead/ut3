@@ -107,7 +107,7 @@ public class squareController : MonoBehaviour
 		{
 			currentColour = gameManager.instance.oneSquareColour;
 		}
-		else
+		else if (winner == 2)
 		{
 			currentColour = gameManager.instance.twoSquareColour;
 		}
