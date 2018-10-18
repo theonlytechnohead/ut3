@@ -126,20 +126,9 @@ public class gameManager : MonoBehaviour
 		{
 			foreach (Transform s1 in r1)
 			{
-				List<List<int>> squareStateList = new List<List<int>>();
-				for (int row = 0; row < s1.GetChild(0).childCount; row++)
+				if (s1.GetComponent<squareController>().wonBy != 0)
 				{
-					List<int> sublist = new List<int>();
-					for (int child = 0; child < s1.GetChild(0).GetChild(row).childCount; child++)
-					{
-						sublist.Add(s1.GetChild(0).GetChild(row).GetChild(child).GetComponent<squareController>().wonBy);
-					}
-					squareStateList.Add(sublist);
-				}
-				int smallSquareWin = checkWin(squareStateList);
-				if (smallSquareWin != 0)
-				{
-					s1.GetComponent<squareController>().setWinState(smallSquareWin);
+					s1.GetComponent<squareController>().setWinState(s1.GetComponent<squareController>().wonBy);
 					destroyChildren(s1.gameObject);
 				}
 			}
