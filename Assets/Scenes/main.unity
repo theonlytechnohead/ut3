@@ -219,8 +219,11 @@ MonoBehaviour:
   twoHighlightSquareColour: {r: 1, g: 0.6862745, b: 0, a: 0.74509805}
   canvas: {fileID: 1484711521}
   StartPanel: {fileID: 1173662504917956, guid: 0226ec5c2622a45628834bdcfb105760, type: 2}
+  LoadButton: {fileID: 1172049625316392, guid: a98d275162acf4b1e8ec6d92b3bf8536, type: 2}
   WinPanel: {fileID: 1589563584936526, guid: 83ee0498c7686417ba41402c09d30bc3, type: 2}
   turn: 1
+  largeData: []
+  smallData: []
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0

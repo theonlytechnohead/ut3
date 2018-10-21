@@ -28,6 +28,7 @@ public class gameManager : MonoBehaviour
 
 	public GameObject canvas;
 	public GameObject StartPanel;
+	public GameObject LoadButton;
 	public GameObject WinPanel;
 
 	[HideInInspector]
@@ -69,6 +70,14 @@ public class gameManager : MonoBehaviour
 		Button four_button = startPanel.transform.GetChild(3).GetComponent<Button>();
 		UnityAction four_action = new UnityAction(delegate { buildBoard(4); });
 		four_button.onClick.AddListener(four_action);
+
+		if (File.Exists(Application.persistentDataPath + "/large.dat") && File.Exists(Application.persistentDataPath + "/small.dat"))
+		{
+			Instantiate(LoadButton, startPanel.transform, false);
+			Button loadButton = startPanel.transform.GetChild(4).GetComponent<Button>();
+			UnityAction load_action = new UnityAction(loadBoard);
+			loadButton.onClick.AddListener(load_action);
+		}
 	}
 
 	// Update is called once per frame
