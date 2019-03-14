@@ -278,12 +278,12 @@ public class gameManager : MonoBehaviour
 		{
 			if (largeSquare.GetComponent<squareController>().wonBy == 1)
 			{
-				largeSquare.GetComponent<Image>().color = oneHighlightSquareColour;
+				largeSquare.GetComponent<Image>().color = oneSquareColour;
 				//largeSquare.GetComponent<squareController>().currentColour = oneSquareColour;
 			}
 			else
 			{
-				largeSquare.GetComponent<Image>().color = twoHighlightSquareColour;
+				largeSquare.GetComponent<Image>().color = twoSquareColour;
 				//largeSquare.GetComponent<squareController>().currentColour = twoSquareColour;
 			}
 
@@ -296,7 +296,7 @@ public class gameManager : MonoBehaviour
 			}
 			else
 			{
-				largeSquare.GetComponent<Image>().color = oneSquareColour;
+				largeSquare.GetComponent<Image>().color = twoSquareColour;
 			}
 		}
 		else
