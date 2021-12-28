@@ -6,7 +6,8 @@ This is Ultimate Tic Tac Toe
 
 ## How?
 
-Go try it out! (or check my blog post)
+Go try it out! [download](../../releases/latest)
+(or check my blog post)
 
 ## When?
 
